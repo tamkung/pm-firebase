@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Dust</title>
+
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+  <script src="/__/firebase/8.3.2/firebase-app.js"></script>
+  <script src="/__/firebase/8.3.2/firebase-database.js"></script>
+  <script src="/__/firebase/init.js?useEmulator=true"></script>
+  <!-- <script src="./js/conf.js"></script> -->
+  <script src="./js/index.js"></script>
+
+  <script type="text/javascript">
+
+    var hour, min, sec;
+    var p1 = 0;
+    var p2 = 0;
+    var p3 = 0;
+
+    $(document).ready(function () {
+
+      google.charts.load('current', { 'packages': ['gauge'] });
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['PM1', 0],
+          ['PM2.5', 0],
+          ['PM10', 0]
+        ]);
+
+        var options = {
+          min: 0, max: 250,
+          greenFrom: 0, greenTo: 100,
+          yellowFrom: 100, yellowTo: 200,
+          redFrom: 200, redTo: 250,
+          minorTicks: 5
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+
+        setInterval(function () {
+          data.setValue(0, 1, 0 + p1);
+          chart.draw(data, options);
+        }, 1000);
+        setInterval(function () {
+          data.setValue(1, 1, 0 + p2);
+          chart.draw(data, options);
+        }, 1000);
+        setInterval(function () {
+          data.setValue(2, 1, 0 + p3);
+          chart.draw(data, options);
+        }, 1000);
+      }
+
+    });
+
+
+    setInterval(myTimer, 1000);
+
+    function myTimer() {
+      firebase.database().ref('/root').on("value", (snapshot) => {
+        var result = snapshot.val();
+        var trdata = "";
+        for (key in result) {
+          rec = result[key];
+          p1 = rec.pm1;
+          p2 = rec.pm2_5;
+          p3 = rec.pm10;
+
+          // trdata += "<tr>";
+          // trdata += "<td>" + p1 + "</td>";
+          // trdata += "<td>" + p2 + "</td>";
+          // trdata += "<td>" + p3 + "</td>";
+          // trdata += "</tr>";
+
+
+
+        }
+        //document.getElementById('tdata').innerHTML = trdata;
+        document.getElementById('pm1').innerHTML = p1;
+        document.getElementById('pm25').innerHTML = p2;
+        document.getElementById('pm10').innerHTML = p3;
+        if (p1 < 100) {
+          document.getElementById('pm1').style.backgroundColor = "lightgreen"
+        } else if (p1 > 100 && p1 < 500) {
+          document.getElementById('pm1').style.backgroundColor = "yellow"
+        } else {
+          document.getElementById('pm1').style.backgroundColor = "red"
+        }
+        if (p2 < 100) {
+          document.getElementById('pm25').style.backgroundColor = "lightgreen"
+        } else if (p2 > 100 && p2 < 500) {
+          document.getElementById('pm25').style.backgroundColor = "yellow"
+        } else {
+          document.getElementById('pm25').style.backgroundColor = "red"
+        }
+        if (p3 < 100) {
+          document.getElementById('pm10').style.backgroundColor = "lightgreen"
+        } else if (p3 > 100 && p3 < 500) {
+          document.getElementById('pm10').style.backgroundColor = "yellow"
+        } else {
+          document.getElementById('pm10').style.backgroundColor = "red"
+        }
+
+        if (p2 <= 25) {
+          document.getElementById('status').innerHTML = 'ดีมาก'
+        } else if (p2 > 25 && p2 <= 50) {
+          document.getElementById('status').innerHTML = 'ดี'
+        } else if (p2 > 50 && p2 <= 100) {
+          document.getElementById('status').innerHTML = 'ปานกลาง'
+        } else if (p2 > 100 && p2 <= 200) {
+          document.getElementById('status').innerHTML = 'เริ่มมีผลกระทบต่อสุขภาพ'
+        } else if (p2 > 200 && p2 <= 500) {
+          document.getElementById('status').innerHTML = 'มีผลกระทบต่อสุขภาพ'
+        } else {
+          document.getElementById('status').innerHTML = 'ผิดปกติ'
+        }
+
+
+
+      }, function (err) {
+        alert(err.message);
+      });
+
+      const d = new Date();
+      //document.getElementById("date").innerHTML = d.toLocaleString();
+      //document.getElementById("time").innerHTML = d.toLocaleTimeString();
+      hour = d.getHours();
+      min = d.getMinutes();
+      sec = d.getSeconds();
+
+      console.log(p1);
+      console.log(p2);
+      console.log(p3);
+
+
+      firebase.database().ref('/Time').update({ "hour": hour, "min": min, "sec": sec })
+        .then(function () {
+        })
+        .catch(function (err) {
+          alert(err.message);
+        });
+    }
+
+    function restart() {
+      firebase.database().ref('/Option').update({ "restart": 0, })
+        .then(function () {
+        })
+        .catch(function (err) {
+          alert(err.message);
+        });
+        
+        firebase.database().ref('/root/Dust').update({ "pm1": 0,"pm2_5": 0,"pm10": 0, })
+        .then(function () {
+        })
+        .catch(function (err) {
+          alert(err.message);
+        });
+    }
+
+  </script>
+</head>
+
+<body>
+  <br>
+  <div class="container">
+    <h1 class="text-center text-info">PM Firebase</h1>
+    <h4 style="text-align: center; font-size: 50px;" id="status"></h4>
+    <div id="chart_div" style="display: block; margin-left: auto; margin-right: auto; width: 50%;"></div>
+    <!-- <a class="btn btn-sm btn-success" href="insert.html">Add New Data</a>-->
+    <br>
+    <!-- <table class="table table-sm table-bordered table-striped table-hover" style="width: 40%; margin-left: auto; margin-right: auto; text-align: center;">
+      <thead>
+        <tr>
+          <th>PM1</th>
+          <th>PM2.5</th>
+          <th>PM10</th>
+        </tr>
+      </thead>
+      <tbody id="tdata"></tbody>
+    </table> -->
+    <table class="table table-sm table-bordered table-striped table-hover"
+      style="width: 40%; margin-left: auto; margin-right: auto; text-align: center; font-size: 30px;">
+      <tr>
+        <th>PM1</th>
+        <th>PM2.5</th>
+        <th>PM10</th>
+      </tr>
+      <tr>
+        <td id="pm1"></td>
+        <td id="pm25"></td>
+        <td id="pm10"></td>
+      </tr>
+    </table>
+    <p style="text-align: center; font-size: 50px;" id="date"></p>
+    <p style="text-align: center; font-size: 50px;" id="time"></p>
+    
+    <div class="text-center"><button class="btn btn-sm btn-primary" onclick="restart();">Restart</button></div>
+  </div>
+
+  <!-- <script src="./js/del.js"></script> -->
+
+</body>
+
+</html>

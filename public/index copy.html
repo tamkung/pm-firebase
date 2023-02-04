@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Title</title>
+
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+</head>
+
+<body>
+  <div class="container">
+    <h2 class="text-center text-info">PM Firebase</h2>
+    <!-- <a class="btn btn-sm btn-success" href="insert.html">Add New Data</a>-->
+    <table class="table table-sm table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th>PM1</th>
+          <th>PM2.5</th>
+          <th>PM10</th>
+        </tr>
+      </thead>
+      <tbody id="tdata"></tbody>
+    </table>
+    <!-- <table class="table table-sm table-bordered table-striped table-hover">
+      <tr>
+        <th>PM1</th>
+        <th>PM2.5</th>
+        <th>PM10</th>
+      </tr>
+      <tr>
+        <td id="pm1"></td>
+        <td id="pm25"></td>
+        <td id="pm10"></td>
+      </tr>
+    </table>
+    <table class="table table-sm table-bordered table-striped table-hover">
+      <tr>
+        <th>PM</th>
+        <th>PM</th>
+        <th>PM</th>
+      </tr>
+      <tr>
+        <td id="txt1"></td>
+        <td id="txt2"></td>
+        <td id="txt3"></td>
+      </tr>
+    </table> -->
+    <p style="text-align: center; font-size: 50px;" id="time"></p>
+    <button class="btn btn-sm btn-primary" onclick="insert();">Add</button>
+  </div>
+  <script src="/__/firebase/8.3.2/firebase-app.js"></script>
+  <script src="/__/firebase/8.3.2/firebase-database.js"></script>
+  <script src="/__/firebase/init.js?useEmulator=true"></script>
+  <script src="./js/conf.js"></script>
+  <script src="./js/index.js"></script>
+  <script src="./js/del.js"></script>
+</body>
+
+</html>
